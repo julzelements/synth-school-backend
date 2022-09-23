@@ -9,3 +9,20 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Sample {
+  id        Int      @id @default(autoincrement())
+  url       String   @unique
+  patch     Patch    @relation(fields: [patchId], references: [id])
+  patchId   Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Patch {
+  id        Int      @id @default(autoincrement())
+  name      String
+  samples   Sample[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

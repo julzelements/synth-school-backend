@@ -11,25 +11,38 @@ const corsOptions: CorsOptions = {
 };
 
 app.use(express.json());
+app.use(cors(corsOptions));
 
-// GET 	    /device-management/devices       : Get all devices
-// POST 	  /device-management/devices       : Create a new device
+// TODO: PUT  	 /patches/{id}   : Update the patch information identified by "id"
+// TODO: DELETE	 /patches/{id}   : Delete patch by "id"
 
-// GET 	   /device-management/devices/{id}   : Get the device information identified by "id"
-// PUT  	 /device-management/devices/{id}   : Update the device information identified by "id"
-// DELETE	 /device-management/devices/{id}   : Delete device by "id"
-
-app.get("/patches", cors(corsOptions), async (req, res) => {
+app.get("/patches", async (req, res) => {
   const patches = await prisma.patch.findMany();
-  console.log('GET/patches')
+  console.log("GET/patches");
   res.json(patches);
 });
 
-app.post("/patches", cors(corsOptions), async (req, res) => {
-  console.log('🟢')
-  // console.log(req.body);
-  // res.json(req.body)
+app.get("/patches/:id", async (req, res) => {
+  const id = parseInt(req.params.id);
+  const patches = await prisma.patch.findFirst({
+    where: {
+      id,
+    },
+  });
+  console.log(`GET/patches/${id}`);
+  res.json(patches);
 });
+
+app.post("/patches", async (req, res) => {
+  const patch = await prisma.patch.create({
+    data: {
+      name: req.body.name,
+    },
+  });
+  res.json(patch);
+});
+
+app.get("patches/");
 
 app.listen(3001, () =>
   console.log("REST API server ready at: http://localhost:3001")

@@ -5,7 +5,7 @@ import multer from "multer";
 
 const storage = multer.diskStorage({
   filename: function (req, file, cb) {
-    console.log("filename");
+    console.log(file.originalname);
     cb(null, file.originalname);
   },
   destination: function (req, file, cb) {
@@ -29,11 +29,12 @@ app.use(cors(corsOptions));
 // TODO: DELETE	 /patches/{id}   : Delete patch by "id"
 
 app.post("/audio", upload.single("blob"), async (req, res) => {
-// app.post("/audio", async (req, res) => {
-  console.log(req);
-  console.log(req.body);
   console.log(req.file);
-  res.status(200).send({ message: "Successfully uploaded files" });
+  res
+    .status(200)
+    .send({
+      message: `Uploaded: ${req.file?.originalname}`,
+    });
 });
 
 app.get("/patches", async (req, res) => {
